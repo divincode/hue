@@ -182,7 +182,7 @@ class RazClient(object):
     relative_path = "/"
     relative_path = self._handle_relative_path(method, url_params, resource_path, relative_path)
 
-    access_type = self.handle_adls_req_mapping(method, url_params)
+    access_type = self.handle_adls_req_mapping(method, url_params, relative_path)
 
     request_data.update({
       "clientType": "adls",
@@ -208,11 +208,13 @@ class RazClient(object):
     return relative_path
 
 
-  def handle_adls_req_mapping(self, method, params):
+  def handle_adls_req_mapping(self, method, params, relative_path=None):
     if method == 'HEAD':
       access_type = ''
       if params.get('action') == 'getStatus' or params.get('resource') == 'filesystem':
         access_type = 'get-status'
+      if relative_path and relative_path == "/" and params.get('resource') == 'filesystem':
+        access_type = 'get-acl'
 
     if method == 'DELETE':
       access_type = 'delete-recursive' if params.get('recursive') == 'true' else 'delete'
