@@ -269,7 +269,9 @@ class ABFS(object):
 
     # For RAZ ABFS, the "/" path stats should have 'getAccessControl' param.
     if is_raz_abfs():
-      param['action'] = 'getAccessControl'
+      params['action'] = 'getAccessControl'
+      schemeless_path += '/'
+      LOG.debug('path in _statf: ' + schemeless_path)
     else:
       params['resource'] = 'filesystem'
 
